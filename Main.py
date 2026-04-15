@@ -11,6 +11,7 @@ import time
 #sETTING UP THE BOT
 intents = discord.Intents.default()
 intents.message_content = True
+intents.voice_states = True
 
 bot = commands.Bot(command_prefix='!', intents=intents, help_command=None)
 
@@ -96,6 +97,29 @@ async def profile(ctx):
 
 
 
+@bot.command()
+async def sound(ctx):
+    print(f"User {ctx.author} issued the sound command")
+    if not ctx.author.voice or not ctx.author.voice.channel:
+        await ctx.send("Ты не в войсе")
+        return
+
+    channel = ctx.author.voice.channel
+
+
+    if ctx.voice_client:
+        await ctx.voice_client.disconnect()
+
+    voice_client = await channel.connect()
+
+    audio_source = discord.FFmpegPCMAudio("secretSound.wav")
+
+    voice_client.play(audio_source)
+
+    while voice_client.is_playing():
+        await asyncio.sleep(1)
+
+    await voice_client.disconnect()
 
 #clearing any errors that may occur with the clear command
 @bot.event
@@ -106,6 +130,11 @@ async def on_command_error(ctx, error):
             'This command does not exist. Use !help to see the list of available commands',
             delete_after=5
         )
+
+@bot.event
+async def on_error(event, *args, **kwargs):
+    import traceback
+    print(traceback.format_exc())
 # Handle errors specific to the clear command
 @clear.error
 async def clear_error(ctx, error):
