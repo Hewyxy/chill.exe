@@ -1,6 +1,6 @@
 #Setting up Discord Library and Bot
 import asyncio
-
+import db
 import discord
 from discord.ext import commands
 
@@ -22,9 +22,12 @@ async def on_ready():
 #Command Help
 @bot.command()
 async def help(ctx):
-    embed = discord.Embed(title="Help", description="List of available commands:", color=0x00ff00)
+    embed = discord.Embed(title="Command Help", description="List of available commands:", color=0x060f12)
     embed.add_field(name="!joke", value="Fetches a random dark joke.", inline=False)
+    embed.add_field(name="!clear <amount>", value="Clears a specified number of messages. (Requires Manage Messages permission)", inline=False)
     await ctx.send(embed=embed)
+
+
 
 # Command to fetch and send a joke
 @bot.command()
@@ -38,6 +41,8 @@ async def joke(ctx):
     await ctx.send(firstPart)
     await asyncio.sleep(2)
     await ctx.send(secondPart)
+
+
 
 #clearing messages command, only for users with manage_messages permission
 @bot.command()
@@ -61,6 +66,36 @@ async def clear(ctx, amount: int):
     #output the name of the user who issued the command and the amount of messages cleared
     await ctx.channel.purge(limit=amount + 1)  # +1 to include the command message itself
     await ctx.send(f'Successfully cleared {amount} messages by {name}✅', delete_after=5)
+
+
+
+#balance command to show the user's balance in an embed
+@bot.command()
+async def balance(ctx):
+    user_id = ctx.author.id
+    user_data = db.get_user(user_id)
+    balance = user_data["balance"]
+    embed = discord.Embed(title=f"{ctx.author.name}'s Balance", description=f"You have {balance} coins 💰", color=0x060f12)
+    await ctx.send(embed=embed)
+
+#profile command to show the user's balance, level, and cards in an embed
+@bot.command()
+async def profile(ctx):
+    user_id = ctx.author.id
+    user_data = db.get_user(user_id)
+    balance = user_data["balance"]
+    level = user_data["level"]
+    cards = user_data["cards"]
+
+    embed = discord.Embed(title=f"{ctx.author.name}'s Profile", color=0x060f12)
+    embed.add_field(name="Balance", value=f"{balance} coins 💰", inline=False)
+    embed.add_field(name="Level", value=f"Level {level} 🏆", inline=False)
+    embed.add_field(name="Cards", value=f"{', '.join(cards) if cards else 'No cards yet'} 🃏", inline=False)
+
+    await ctx.send(embed=embed)    
+
+
+
 
 #clearing any errors that may occur with the clear command
 @bot.event
