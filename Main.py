@@ -170,7 +170,7 @@ async def openpack(ctx):
         "Pack: 50% Regular, 30% IGL, 20% AWP",
         view=view
     )
-    
+
 #clearing any errors that may occur with the clear command
 @bot.event
 # Handle command errors globally
@@ -221,4 +221,3 @@ async def addMoney(ctx, user: discord.User, amount: int):
     db.add_money(user.id, amount)
     await ctx.send(f"Added {amount} coins to {user.mention}'s balance.")
 
-bot.run('MTQ5MzY2ODc5Nzc3OTkzNTMzOQ.GLni_4.Q7DM0YtKV2m2365rByueSSZOv3J4MiQUNKlwXM')
