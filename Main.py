@@ -4,6 +4,7 @@ import db
 import discord
 from discord.ext import commands
 from discord.ui import Button, View
+from dotenv import load_dotenv
 
 # Other imports
 import os
@@ -19,6 +20,8 @@ intents.voice_states = True
 
 bot = commands.Bot(command_prefix='!', intents=intents, help_command=None)
 
+load_dotenv()
+token = os.getenv("DISCORD_TOKEN") 
 
 @bot.event
 async def on_ready():
@@ -221,3 +224,4 @@ async def addMoney(ctx, user: discord.User, amount: int):
     db.add_money(user.id, amount)
     await ctx.send(f"Added {amount} coins to {user.mention}'s balance.")
 
+bot.run(token)

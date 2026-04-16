@@ -1,0 +1,15 @@
+# environment file (VERY IMPORTANT)
+.env
+
+# Python cache
+__pycache__/
+*.pyc
+
+# logs
+*.log
+
+# virtual env (if you use one)
+venv/
+.env/
+
+.json
