@@ -41,13 +41,15 @@ def add_card(user_id, card):
     user_id = str(user_id)
 
     if user_id not in data:
+
         data[user_id] = {"balance": 0, "level": 1, "cards": []}
 
     if "cards" not in data[user_id]:
+
         data[user_id]["cards"] = []
 
     data[user_id]["cards"].append(card)
-
+    
     save_data(data)
 
 def get_cards(user_id):
