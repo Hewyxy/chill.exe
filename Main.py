@@ -112,9 +112,8 @@ async def profile(ctx, user: discord.User = None):
 #Plays sound in the user's voice channel, if they are in one, and disconnects after the sound is done playing
 @bot.command()
 async def sound(ctx):
-    print(f"User {ctx.author} issued the sound command")
     if not ctx.author.voice or not ctx.author.voice.channel:
-        await ctx.send("Ты не в войсе")
+        await ctx.send("User is not connected to a voice channel.", delete_after=5)
         return
 
     channel = ctx.author.voice.channel
