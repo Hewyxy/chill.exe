@@ -12,4 +12,5 @@ __pycache__/
 venv/
 .env/
 
+secretSound.wav
 database.json
