@@ -12,7 +12,7 @@ chill.exe is a Discord bot made for fun and casual use with friends. It includes
 ## Commands
 
 ### General
-- `!help` — shows the list of available commands  
+- `!helpme` — shows the list of available commands  
 - `!profile` — displays your profile and stats  
 
 ### Entertainment

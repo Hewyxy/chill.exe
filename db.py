@@ -20,6 +20,20 @@ def get_user(user_id):
 
     return data[str(user_id)]
 
+def add_exp(user_id, amount):
+    data = load_data()
+
+    if data[user_id]["Exp"] >= 100:
+        data[user_id]["level"] += 1
+        data[user_id]["Exp"] -= 100
+    user_id = str(user_id)
+
+    if user_id not in data:
+        data[user_id] = {"balance": 0, "level": 1,"Exp": 0, "Opened" : 0, "Roaster": {"Name": "", "Points" : 0,"Coach" : None, "IGL": None, "AWper" : None, "Rifelrs" : [] }, "cards": [], "DailyClaim": None }
+
+    data[user_id]["Exp"] += amount
+
+    save_data(data)
 def add_money(user_id, amount):
     data = load_data()
 

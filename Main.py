@@ -31,7 +31,7 @@ async def on_ready():
 @bot.command()
 async def helpme(ctx):
     embed = discord.Embed(title="Command Help", description="List of available commands:", color=0x060f12)
-    embed.add_field(name="!help", value="Shows the list of commands.", inline=False)
+    embed.add_field(name="!helpme", value="Shows the list of commands.", inline=False)
     embed.add_field(name="!profile", value="Displays your profile and stats.", inline=False)
 
     embed.add_field(name="!joke", value="Fetches a random dark joke.", inline=False)
@@ -194,6 +194,7 @@ async def open(ctx):
 
         player = openRegularPack()
         db.subtract_money(ctx.author.id, 175)
+        db.add_exp(ctx.author.id, 5)
 
         await interaction.message.delete(   )
 
@@ -213,7 +214,6 @@ async def open(ctx):
                 await interaction.followup.send("That's not your card!", ephemeral=True, delete_after=5)
                 return
             db.add_card(ctx.author.id, player)
-            
             await interaction.response.edit_message(
             content="✅ Card added to your collection!",
             view=None
@@ -266,7 +266,7 @@ async def open(ctx):
 
         player = openRegularPack()
         db.subtract_money(ctx.author.id, 175)
-        
+        db.add_exp(ctx.author.id, 5)
         await interaction.response.send_message("Opening pack...")
 
         slowOpen = await interaction.original_response()
@@ -528,7 +528,7 @@ async def sell(ctx, card_number: str):
 async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandNotFound):
         await ctx.send(
-            'This command does not exist. Use !help to see the list of available commands',
+            'This command does not exist. Use !helpme to see the list of available commands',
             delete_after=5
         )
 
