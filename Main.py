@@ -100,18 +100,18 @@ async def profile(ctx, user: discord.User = None):
     user_data = db.get_user(user_id)
     balance = user_data["balance"]
     level = user_data["level"]
+    opened = user_data["Opened"]
     cards = len(user_data["cards"]) if user_data["cards"] else 0
+    legendary_cards = sum(1 for card in user_data["cards"] if card["Rarity"] == "Legend") if user_data["cards"] else 0
 
-    #Buttons
-    inventrory_button = Button(label="Inventory", style=discord.ButtonStyle.blurple)
-
-    nextpage_button = Button(label=">", style=discord.ButtonStyle.blurple)
-
-    previouspage_button = Button(label="<", style=discord.ButtonStyle.blurple)
 
 
     embed = discord.Embed(title=f"Profile Information", color=0x060f12)
-    embed.add_field(name="Balance", value=f"${balance}         Level {level} 🏆            {cards} 🃏", inline=False)
+    embed.add_field(name="\nLevel:", value=f"{level}", inline=False)
+    embed.add_field(name="\nBalance:", value=f"${balance:,}", inline=False)
+    embed.add_field(name="\nCards in Inventory:", value=f"{cards}", inline=False)
+    embed.add_field(name="\nLegendary Cards:", value=f"{legendary_cards}", inline=False)
+    embed.add_field(name="\nCards Opened:", value=f"{opened}", inline=False)
 
 
     await ctx.send(embed=embed)    
@@ -338,15 +338,161 @@ async def open(ctx):
 
 @bot.command()
 async def inv(ctx):
-    use_id = ctx.author.id
-    cards = db.get_cards(use_id)
+    id = 0
+
+    def print_page():
+        cards = db.get_cards(ctx.author.id)
+        if not cards:
+            return "Your inventory is empty. Open some packs to get cards!"
+
+        embed = discord.Embed(
+            title=f"{ctx.author.name}'s Inventory",
+            color=0x060f12
+        )
+
+        for i in range(5):
+            if id + i >= len(cards):
+                break
+
+            card = cards[id + i]
+            embed.add_field(
+                name=f"{id + i + 1}. {card['Name']} ({card['Rating']})",
+                value=f"Role: {card['Role']}\nRarity: {card['Rarity']}\nPrice: ${card['Price']}",
+                inline=False
+            )
+        
+        embed.set_footer(text=f"Page {id // 5 + 1} of {(len(db.get_cards(ctx.author.id)) - 1) // 5 + 1}")
+
+        return embed
+
+    async def next_page(interaction: discord.Interaction):
+        nonlocal id
+
+        if interaction.user != ctx.author:
+            await interaction.response.send_message(
+                "That's not your inventory!", ephemeral=True
+            )
+            return
+
+        cards = db.get_cards(ctx.author.id)
+
+        if id + 5 >= len(cards):
+            return
+
+        id += 5
+        await interaction.response.edit_message(embed=print_page())
+
+    async def previous_page(interaction: discord.Interaction):
+        nonlocal id
+
+        if interaction.user != ctx.author:
+            await interaction.response.send_message(
+                "That's not your inventory!", ephemeral=True
+            )
+            return
+
+        if id - 5 < 0:
+            return
+
+        id -= 5
+        await interaction.response.edit_message(embed=print_page())
+
+    # Buttons
+    nextpage_button = Button(label=">", style=discord.ButtonStyle.gray)
+    nextpage_button.callback = next_page
+
+    previouspage_button = Button(label="<", style=discord.ButtonStyle.gray)
+    previouspage_button.callback = previous_page
+
+    inventory_view = View()
+    inventory_view.add_item(previouspage_button)
+    inventory_view.add_item(nextpage_button)
+
+    cards = db.get_cards(ctx.author.id)
     if not cards:
-        await ctx.send("Your inventory is empty. Open some packs to get cards!", delete_after=5)
+        await ctx.send("Your inventory is empty.", delete_after=5)
         return
-    embed = discord.Embed(title=f"{ctx.author.name}'s Inventory", color=0x060f12)
-    for card in cards:
-        embed.add_field(name=card["Name"], value=f"Rarity: {card['Rarity']}", inline=False)
-    await ctx.send(embed=embed)
+
+    await ctx.send(embed=print_page(), view=inventory_view)
+
+@bot.event
+async def error(event, *args, **kwargs):
+    import traceback
+    print(traceback.format_exc())
+
+@bot.command()
+async def sell(ctx, card_number: str):
+    if card_number.lower() == "all":
+        cards = db.get_cards(ctx.author.id)
+        if not cards:
+            embed = discord.Embed(title="Inventory Empty :/", description="Your inventory is empty. Open some packs to get cards!", color=0x060f12)
+            await ctx.send(embed=embed, delete_after=5)
+            return
+
+        total_value = sum(card["Price"] for card in cards)
+        db.add_money(ctx.author.id, total_value)
+        for card in cards:
+            if card in cards != card["Rarity"] == "Legend":
+                continue
+            else:   
+                db.remove_card(ctx.author.id, card)
+
+        embed = discord.Embed(title="Cards Sold!", description=f"You sold all your cards for ${total_value} coins!", color=0x10F500)
+        await ctx.send(embed=embed, delete_after=5)
+        return
+    else:
+        try:
+            card_number = int(card_number)
+        except ValueError:
+            embed = discord.Embed(title="Invalid Card Number :/", description="Please provide a valid card number or 'all' to sell all cards.", color=0xF50000)
+            await ctx.send(embed=embed, delete_after=5)
+            return
+    cards = db.get_cards(ctx.author.id)
+    
+    if not cards:
+        embed = discord.Embed(title="Inventory Empty :/", description="Your inventory is empty. Open some packs to get cards!", color=0x060f12)
+        await ctx.send(embed=embed, delete_after=5)
+        return
+
+    if card_number < 1 or card_number > len(cards):
+        embed = discord.Embed(title="Invalid Card Number :/", description=f"Please provide a valid card number between 1 and {len(cards)}.", color=0xF50000)
+        await ctx.send(embed=embed, delete_after=5)
+        return
+    if cards[card_number - 1]["Rarity"] == "Legend":
+        embed = discord.Embed(title="Are you sure?", description=f"Press the confirm button to sell {cards[card_number - 1]['Name']} for ${cards[card_number - 1]['Price']}", color=0xF50000)
+
+        async def cancel(interaction: discord.Interaction):
+            if interaction.user != ctx.author:
+                await interaction.response.send_message("That's not your card!", ephemeral=True, delete_after=5)
+                return
+            await interaction.response.edit_message(
+                content="Sale cancelled.",
+                view=None
+            )
+        async def confirm(interaction: discord.Interaction):
+            if interaction.user != ctx.author:
+                await interaction.response.send_message("That's not your card!", ephemeral=True, delete_after=5)
+                return
+            db.add_money(ctx.author.id, cards[card_number - 1]['Price'])
+            db.remove_card(ctx.author.id, cards[card_number - 1])
+            await interaction.response.edit_message(
+                content=f"Card was sold for ${cards[card_number - 1]['Price']}",
+                view=None
+            )
+        confirm_button = Button(label="Confirm", style=discord.ButtonStyle.red)
+        confirm_button.callback = confirm
+        cancel_button = Button(label="Cancel", style=discord.ButtonStyle.grey)
+        cancel_button.callback = cancel
+        view = View()
+        view.add_item(confirm_button)
+        view.add_item(cancel_button)
+        await ctx.send(embed=embed, view=view)
+    else:
+        card = cards[card_number - 1]
+        db.add_money(ctx.author.id, card["Price"])
+        db.remove_card(ctx.author.id, card)
+        embed = discord.Embed(title="Card Sold!", description=f"You sold {card['Name']} for ${card['Price']} coins!", color=0x10F500)
+        await ctx.send(embed=embed, delete_after=5)
 
 
 #clearing any errors that may occur with the clear command
@@ -397,7 +543,7 @@ async def clearData(ctx):
 @commands.is_owner()
 async def addMoney(ctx, user: discord.User, amount: int):
     db.add_money(user.id, amount)
-    embed = discord.Embed(title="Balance Update",  description=f"{user.name}'s balance was andjusted by {amount}", color=0xff000 )
+    embed = discord.Embed(title="Balance Update",  description=f"{user.name}'s balance was adjusted by {amount}", color=0x10F500)
     await ctx.send(embed=embed)
 
 bot.run(token)

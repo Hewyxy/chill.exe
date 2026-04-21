@@ -38,7 +38,8 @@ def subtract_money(user_id, amount):
     user_id = str(user_id)
 
     if user_id not in data:
-        data[user_id] = {"balance": 0, "level": 1, "cards": []}
+        data[user_id] = {"balance": 0, "level": 1,"Exp": 0, "Opened" : 0, "Roaster": {"Name": "", "Points" : 0,"Coach" : None, "IGL": None, "AWper" : None, "Rifelrs" : [] }, "cards": [], }
+
 
     data[user_id]["balance"] -= amount
 
@@ -51,7 +52,7 @@ def add_card(user_id, card):
 
     if user_id not in data:
 
-        data[user_id] = {"balance": 0, "level": 1, "cards": []}
+        data[user_id] = {"balance": 0, "level": 1,"Exp": 0, "Opened" : 0, "Roaster": {"Name": "", "Points" : 0,"Coach" : None, "IGL": None, "AWper" : None, "Rifelrs" : [] }, "cards": [], }
 
     if "cards" not in data[user_id]:
 
@@ -60,6 +61,21 @@ def add_card(user_id, card):
     data[user_id]["cards"].append(card)
     
     save_data(data)
+
+def remove_card(user_id, card):
+    data = load_data()
+
+    user_id = str(user_id)
+
+    if user_id not in data:
+        return
+
+    if "cards" not in data[user_id]:
+        return
+
+    if card in data[user_id]["cards"]:
+        data[user_id]["cards"].remove(card)
+        save_data(data)
 
 def get_cards(user_id):
     data = load_data()

@@ -1,7 +1,7 @@
 #cardPacks.py
 import random
 #rarity levels: Common, Rare, Elite, Legend
-#probabilitites: Common 50%, Rare 35%, Elite 10%, Legend 5% ?? NEED TO BE CHANGED SINCE DROP RATES ARE TOO HIGH
+#probabilitites: Common 65%, Rare 25%, Elite 9%, Legend 1% 
 
 
 #igls   
@@ -22,7 +22,7 @@ AleksiB = {"Name": "Aleksib", "Rating": 51, "Country": "Finland", "Rarity": "Com
 Fallen =  {"Name": "Fallen",  "Rating": 51, "Country": "Brazil",  "Rarity": "Common", "Role": "IGL", "Team": "Furia",         "Price": 139,}
 maj3r =   {"Name": "MAJ3R",   "Rating": 52, "Country": "Turkey",  "Rarity": "Common", "Role": "IGL", "Team": "Aurora",        "Price": 143,}
 bLitz =   {"Name": "bLITZ",   "Rating": 52, "Country": "Mongolia","Rarity": "Common", "Role": "IGL", "Team": "The Mongols",   "Price": 141,}
-karrigan ={"Name": "karrigan","Rating": 50, "Country": "Denmark", "Rarity": "Common", "Role": "IGL", "Team": "FaZe",          "Price": 138,}
+karrigan ={"Name": "karrigan","Rating": 50, "Country": "Denmark", "Rarity": "Common", "Role": "IGL", "Team": "Falcons",       "Price": 138,}
 HooXI =   {"Name": "HooXi",   "Rating": 43, "Country": "Denmark", "Rarity": "Common", "Role": "IGL", "Team": "Astralis",      "Price": 120,}
 
 
@@ -115,11 +115,11 @@ AWPers = [Zywoo, m0nesy, sh1ro, p910, w0nderful, woxic, torzsi]
 
 def openRegularPack():
     rarity_roll = random.randint(1, 100)
-    if rarity_roll <= 50:
+    if rarity_roll <= 65:
         rarity = "Common"
-    elif rarity_roll <= 85:
+    elif rarity_roll <= 90:
         rarity = "Rare"
-    elif rarity_roll <= 95:
+    elif rarity_roll <= 99:
         rarity = "Elite"
     else:
         rarity = "Legend"
@@ -148,7 +148,7 @@ def openIGLPack():
         rarity = "Common"
     elif rarity_roll <= 85:
         rarity = "Rare"
-    elif rarity_roll <= 95:
+    elif rarity_roll <= 91:
         rarity = "Elite"
     else:
         rarity = "Legend"
