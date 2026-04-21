@@ -31,8 +31,20 @@ async def on_ready():
 @bot.command()
 async def help(ctx):
     embed = discord.Embed(title="Command Help", description="List of available commands:", color=0x060f12)
+    embed.add_field(name="!help", value="Shows the list of commands.", inline=False)
+    embed.add_field(name="!profile", value="Displays your profile and stats.", inline=False)
+
     embed.add_field(name="!joke", value="Fetches a random dark joke.", inline=False)
-    embed.add_field(name="!clear <amount>", value="Clears a specified number of messages. (Requires Manage Messages permission)", inline=False)
+    embed.add_field(name="!sound", value="Plays a sound in your current voice channel.", inline=False)
+
+    embed.add_field(name="!balance", value="Shows your current balance.", inline=False)
+    embed.add_field(name="!daily", value="Claim your daily reward.", inline=False)
+
+    embed.add_field(name="!inv", value="Displays your card inventory.", inline=False)
+    embed.add_field(name="!sell <number>", value="Sells a card by its number.", inline=False)
+    embed.add_field(name="!sell all", value="Sells all cards except legendary ones.", inline=False)
+
+    embed.add_field(name="!clear <amount>", value="Clears a specified number of messages (max 500). Requires Manage Messages permission.", inline=False)
     await ctx.send(embed=embed)
 
 

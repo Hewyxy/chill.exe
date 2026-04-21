@@ -14,7 +14,7 @@ def get_user(user_id):
     data = load_data()
 
     if str(user_id) not in data:
-        data[user_id] = {"balance": 0, "level": 1,"Exp": 0, "Opened" : 0, "Roaster": {"Name": "", "Points" : 0,"Coach" : None, "IGL": None, "AWper" : None, "Rifelrs" : [] }, "cards": [], }
+        data[user_id] = {"balance": 0, "level": 1,"Exp": 0, "Opened" : 0, "Roaster": {"Name": "", "Points" : 0,"Coach" : None, "IGL": None, "AWper" : None, "Rifelrs" : [] }, "cards": [], "DailyClaim": None }
 
         save_data(data)
 
@@ -26,7 +26,7 @@ def add_money(user_id, amount):
     user_id = str(user_id)
 
     if user_id not in data:
-        data[user_id] = {"balance": 0, "level": 1,"Exp": 0, "Opened" : 0, "Roaster": {"Name": "", "Points" : 0,"Coach" : None, "IGL": None, "AWper" : None, "Rifelrs" : [] }, "cards": [], }
+        data[user_id] = {"balance": 0, "level": 1,"Exp": 0, "Opened" : 0, "Roaster": {"Name": "", "Points" : 0,"Coach" : None, "IGL": None, "AWper" : None, "Rifelrs" : [] }, "cards": [],"DailyClaim": None }
 
     data[user_id]["balance"] += amount
 
@@ -38,7 +38,7 @@ def subtract_money(user_id, amount):
     user_id = str(user_id)
 
     if user_id not in data:
-        data[user_id] = {"balance": 0, "level": 1,"Exp": 0, "Opened" : 0, "Roaster": {"Name": "", "Points" : 0,"Coach" : None, "IGL": None, "AWper" : None, "Rifelrs" : [] }, "cards": [], }
+        data[user_id] = {"balance": 0, "level": 1,"Exp": 0, "Opened" : 0, "Roaster": {"Name": "", "Points" : 0,"Coach" : None, "IGL": None, "AWper" : None, "Rifelrs" : [] }, "cards": [], "DailyClaim": None }
 
 
     data[user_id]["balance"] -= amount
@@ -52,7 +52,7 @@ def add_card(user_id, card):
 
     if user_id not in data:
 
-        data[user_id] = {"balance": 0, "level": 1,"Exp": 0, "Opened" : 0, "Roaster": {"Name": "", "Points" : 0,"Coach" : None, "IGL": None, "AWper" : None, "Rifelrs" : [] }, "cards": [], }
+        data[user_id] = {"balance": 0, "level": 1,"Exp": 0, "Opened" : 0, "Roaster": {"Name": "", "Points" : 0,"Coach" : None, "IGL": None, "AWper" : None, "Rifelrs" : [] }, "cards": [], "DailyClaim": None }
 
     if "cards" not in data[user_id]:
 
@@ -86,4 +86,3 @@ def get_cards(user_id):
         return []
 
     return data[user_id].get("cards", [])
-
