@@ -23,9 +23,13 @@ def get_user(user_id):
 def add_exp(user_id, amount):
     data = load_data()
 
-    if data[user_id]["Exp"] >= 100:
+    currentLvl = data[user_id]["level"]
+
+    exptoRankUp = 100 * currentLvl
+
+    if data[user_id]["Exp"] >= exptoRankUp:
         data[user_id]["level"] += 1
-        data[user_id]["Exp"] -= 100
+        data[user_id]["Exp"] -= exptoRankUp
     user_id = str(user_id)
 
     if user_id not in data:
@@ -34,6 +38,7 @@ def add_exp(user_id, amount):
     data[user_id]["Exp"] += amount
 
     save_data(data)
+    
 def add_money(user_id, amount):
     data = load_data()
 

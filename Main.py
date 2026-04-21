@@ -63,6 +63,29 @@ async def daily(ctx):
     await ctx.send(embed=embed)
     data[user_id]["DailyClaim"] = str(today)
 
+@bot.command()
+async def rob(ctx, member: discord.Member):
+    if member == ctx.author:
+        await ctx.send("You cannot rob yourself!", delete_after=5)
+        return
+    if member.bot:
+        await ctx.send("You cannot rob a bot!", delete_after=5)
+        return
+
+    robber_data = db.get_user(ctx.author.id)
+    victim_data = db.get_user(member.id)
+
+    if victim_data["balance"] < 100:
+        embed = discord.Embed(title="Robbery Failed", description=f"The user you are trying to rob has less than $100, you cannot rob them.", color=0xF50000)
+        await ctx.send(embed=embed, delete_after=5)
+        return
+
+    amount_stolen = random.randint(50, min(300, victim_data["balance"]))
+    db.subtract_money(member.id, amount_stolen)
+    db.add_money(ctx.author.id, amount_stolen)
+
+    embed = discord.Embed(title="Robbery Successful!", description=f"You have successfully robbed {member.name} and stolen ${amount_stolen}!", color=0x10F500)
+    await ctx.send(embed=embed, delete_after=5)
 
 # Command to fetch and send a joke
 @bot.command()
