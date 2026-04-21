@@ -32,6 +32,7 @@ def add_money(user_id, amount):
 
     save_data(data)
 
+
 def subtract_money(user_id, amount):
     data = load_data()
 

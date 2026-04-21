@@ -29,7 +29,7 @@ async def on_ready():
 
 #Command Help
 @bot.command()
-async def help(ctx):
+async def helpme(ctx):
     embed = discord.Embed(title="Command Help", description="List of available commands:", color=0x060f12)
     embed.add_field(name="!help", value="Shows the list of commands.", inline=False)
     embed.add_field(name="!profile", value="Displays your profile and stats.", inline=False)
@@ -47,6 +47,21 @@ async def help(ctx):
     embed.add_field(name="!clear <amount>", value="Clears a specified number of messages (max 500). Requires Manage Messages permission.", inline=False)
     await ctx.send(embed=embed)
 
+@bot.command()
+async def daily(ctx):
+    data = db.load_data()
+    user_id = str(ctx.author.id)
+    today = datetime.now(UTC).date()
+
+    if data[user_id].get("DailyClaim") == str(today):
+        embed = discord.Embed(title="Daily Reward Already Claimed", description="You have already claimed your daily reward today. Come back tomorrow!", color=0xF50000)
+        await ctx.send(embed=embed)
+        return
+    reward = random.randint(850, 1350)
+    db.add_money(ctx.author.id, reward)
+    embed = discord.Embed(title="Daily Reward Claimed!", description=f"You have received ${reward} as your daily reward. Come back tomorrow for more!", color=0x10F500)
+    await ctx.send(embed=embed)
+    data[user_id]["DailyClaim"] = str(today)
 
 
 # Command to fetch and send a joke
@@ -339,10 +354,10 @@ async def open(ctx):
     view.add_item(FastOpen_Button)
 
     probabilityMessage = discord.Embed(title="Pack Probabilities:")
-    probabilityMessage.add_field(name="Common", value="50%", inline=False)
-    probabilityMessage.add_field(name="Rare", value="  35%", inline=False)
-    probabilityMessage.add_field(name="Elite", value="10%", inline=False)
-    probabilityMessage.add_field(name="Legend", value=" 5%", inline=False)
+    probabilityMessage.add_field(name="Common", value="60%", inline=False)
+    probabilityMessage.add_field(name="Rare", value="  25%", inline=False)
+    probabilityMessage.add_field(name="Elite", value="9%", inline=False)
+    probabilityMessage.add_field(name="Legend", value=" 1%", inline=False)
     message = await ctx.send(
         embed=probabilityMessage,
         view=view
