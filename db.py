@@ -23,6 +23,8 @@ def get_user(user_id):
 def add_exp(user_id, amount):
     data = load_data()
 
+    user_id = str(user_id)
+    data[user_id]["Opened"] += 1
     currentLvl = data[user_id]["level"]
 
     exptoRankUp = 100 * currentLvl
@@ -38,7 +40,7 @@ def add_exp(user_id, amount):
     data[user_id]["Exp"] += amount
 
     save_data(data)
-    
+
 def add_money(user_id, amount):
     data = load_data()
 

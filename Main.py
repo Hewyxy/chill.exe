@@ -27,6 +27,7 @@ token = os.getenv("DISCORD_TOKEN")
 async def on_ready():
     print(f'Logged in as {bot.user}')
 
+
 #Command Help
 @bot.command()
 async def helpme(ctx):
@@ -59,33 +60,12 @@ async def daily(ctx):
         return
     reward = random.randint(850, 1350)
     db.add_money(ctx.author.id, reward)
+    data = db.load_data()  # Reload data to get the latest changes
     embed = discord.Embed(title="Daily Reward Claimed!", description=f"You have received ${reward} as your daily reward. Come back tomorrow for more!", color=0x10F500)
     await ctx.send(embed=embed)
     data[user_id]["DailyClaim"] = str(today)
+    db.save_data(data)
 
-@bot.command()
-async def rob(ctx, member: discord.Member):
-    if member == ctx.author:
-        await ctx.send("You cannot rob yourself!", delete_after=5)
-        return
-    if member.bot:
-        await ctx.send("You cannot rob a bot!", delete_after=5)
-        return
-
-    robber_data = db.get_user(ctx.author.id)
-    victim_data = db.get_user(member.id)
-
-    if victim_data["balance"] < 100:
-        embed = discord.Embed(title="Robbery Failed", description=f"The user you are trying to rob has less than $100, you cannot rob them.", color=0xF50000)
-        await ctx.send(embed=embed, delete_after=5)
-        return
-
-    amount_stolen = random.randint(50, min(300, victim_data["balance"]))
-    db.subtract_money(member.id, amount_stolen)
-    db.add_money(ctx.author.id, amount_stolen)
-
-    embed = discord.Embed(title="Robbery Successful!", description=f"You have successfully robbed {member.name} and stolen ${amount_stolen}!", color=0x10F500)
-    await ctx.send(embed=embed, delete_after=5)
 
 # Command to fetch and send a joke
 @bot.command()
@@ -99,7 +79,6 @@ async def joke(ctx):
     await ctx.send(firstPart)
     await asyncio.sleep(2)
     await ctx.send(secondPart)
-
 
 
 #clearing messages command, only for users with manage_messages permission
@@ -131,7 +110,6 @@ async def clear(ctx, amount: int):
     await ctx.send(embed=embedSuccesfull, delete_after=5)
 
 
-
 #balance command to show the user's balance in an embed
 @bot.command()
 async def balance(ctx):
@@ -140,6 +118,7 @@ async def balance(ctx):
     balance = user_data["balance"]
     embed = discord.Embed(title=f"{ctx.author.name}'s Balance", description=f"You have {balance} coins 💰", color=0x060f12)
     await ctx.send(embed=embed)
+
 
 #profile command to show the user's balance, level, and cards in an embed
 @bot.command()
@@ -190,6 +169,7 @@ async def sound(ctx):
         await asyncio.sleep(1)
 
     await voice_client.disconnect()
+
 
 #open pack command to open a card pack and add the card to the user's collection, with a button to open the pack and an embed to show the card that was opened, with different colors for different rarities
 #We need to work on the system to day, to make everything looks clean on work properly.
@@ -386,6 +366,10 @@ async def open(ctx):
         view=view
     )
 
+
+#  Shows inventory of cards in an embed,
+#  with pagination buttons to navigate through the inventory if there are more than 5 cards, 
+# and only the user who issued the command can use the buttons to navigate through their inventory
 @bot.command()
 async def inv(ctx):
     id = 0
@@ -465,11 +449,16 @@ async def inv(ctx):
 
     await ctx.send(embed=print_page(), view=inventory_view)
 
+
 @bot.event
 async def error(event, *args, **kwargs):
     import traceback
     print(traceback.format_exc())
 
+
+#Selling cards command, users can sell a card by its number in the inventory, 
+# or sell all cards except legendary ones with the "all" option, 
+# and only the user who issued the command can sell their cards
 @bot.command()
 async def sell(ctx, card_number: str):
     if card_number.lower() == "all":
@@ -543,6 +532,65 @@ async def sell(ctx, card_number: str):
         db.remove_card(ctx.author.id, card)
         embed = discord.Embed(title="Card Sold!", description=f"You sold {card['Name']} for ${card['Price']} coins!", color=0x10F500)
         await ctx.send(embed=embed, delete_after=5)
+
+
+#Team command to set the user's team with a name, points, coach, IGL, AWPer, and 3 riflers,
+#  and show the team in an embed, with different colors for different points ranges
+@bot.command()
+async def team(ctx):
+    user = ctx.author.id
+    user_data = db.get_user(user)
+    roaster = user_data["Roaster"]
+    teamName = roaster["Name"]
+    teamPoints = roaster["Points"]
+    coach = roaster["Coach"]
+    iGL = roaster["IGL"]
+    AWPer = roaster["AWper"]
+    riflers = roaster["Rifelrs"]
+
+    power = coach["Rating"] if coach else 0
+    power += iGL["Rating"] if iGL else 0
+    power += AWPer["Rating"] if AWPer else 0
+    power += sum(rifler["Rating"] for rifler in riflers) if riflers else 0
+    embed = discord.Embed(title=f"[{teamPoints}] {teamName}", color=0x060f12)
+    embed.add_field(name="Coach:", value=coach["Name"] if coach else "Not set", inline=False)
+    embed.add_field(name="IGL:", value=iGL["Name"] if iGL else "Not set", inline=False)
+    embed.add_field(name="AWPer:", value=AWPer["Name"] if AWPer else "Not set", inline=False)
+    embed.add_field(name="Riflers:", value="\n".join(r["Name"] for r in riflers) if riflers else "Not set", inline=False)
+    embed.add_field(name="\nPower:", value=f"{power:.2f}", inline=False)
+
+    await ctx.send(embed=embed)
+
+
+
+
+#Work on the making cooldown for the daily command, so that users can only claim their daily reward once every 5 hours,
+#  and if they try to claim it again before the cooldown is over, 
+# they will get a message telling them how much time is left until they can claim it again.
+@bot.command()
+@commands.is_owner() #Will be enabled when the bot is done, for testing purposes only the owner can use this command to test
+async def rob(ctx, member: discord.Member):
+    if member == ctx.author:
+        await ctx.send("You cannot rob yourself!", delete_after=5)
+        return
+    if member.bot:
+        await ctx.send("You cannot rob a bot!", delete_after=5)
+        return
+
+    robber_data = db.get_user(ctx.author.id)
+    victim_data = db.get_user(member.id)
+
+    if victim_data["balance"] < 100:
+        embed = discord.Embed(title="Robbery Failed", description=f"The user you are trying to rob has less than $100, you cannot rob them.", color=0xF50000)
+        await ctx.send(embed=embed, delete_after=5)
+        return
+
+    amount_stolen = random.randint(50, min(300, victim_data["balance"]))
+    db.subtract_money(member.id, amount_stolen)
+    db.add_money(ctx.author.id, amount_stolen)
+
+    embed = discord.Embed(title="Robbery Successful!", description=f"You have successfully robbed {member.name} and stolen ${amount_stolen}!", color=0x10F500)
+    await ctx.send(embed=embed, delete_after=5)
 
 
 #clearing any errors that may occur with the clear command
