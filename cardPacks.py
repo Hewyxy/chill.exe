@@ -96,7 +96,19 @@ zont1x =     {"Name": "zont1x",     "Rating": 56, "Country": "Ukraine",     "Rar
 dem0n =      {"Name": "dem0n",      "Rating": 64, "Country": "Ukraine",     "Rarity": "Common",  "Role": "Rifler", "Team": "FUT",           "Price": 176,}
 jcobbb =     {"Name": "jcobbb",     "Rating": 54, "Country": "Poland",      "Rarity": "Common",  "Role": "Rifler", "Team": "FaZe",          "Price": 148,}
 
-
+#Coahces
+zonic =  {"Name": "Zonic",  "Rating": 98, "Country": "Denmark",     "Rarity": "Legend", "Role": "Coach", "Team": "Falcons",       "Price": 249}
+b1ad3 =  {"Name": "B1ad3",  "Rating": 98, "Country": "Ukraine",     "Rarity": "Legend", "Role": "Coach", "Team": "Natus Vincere", "Price": 219}
+sycrone ={"Name": "Sycrone","Rating": 89, "Country": "Denmark",     "Rarity": "Legend", "Role": "Coach", "Team": "MOUZ",          "Price": 219}
+xTQZZZ = {"Name": "XTQZZZ", "Rating": 88, "Country": "France",      "Rarity": "Legend", "Role": "Coach", "Team": "Vitality",      "Price": 200}
+sAw =    {"Name": "sAw",    "Rating": 88, "Country": "Finland",     "Rarity": "Legend", "Role": "Coach", "Team": "G2",            "Price": 200}
+hally =  {"Name": "hally",  "Rating": 87, "Country": "Russia",      "Rarity": "Legend", "Role": "Coach", "Team": "Spirit",        "Price": 190}
+dastan = {"Name": "Dastan", "Rating": 80, "Country": "Kazakhstan",  "Rarity": "Elite",  "Role": "Coach", "Team": "Parivision",    "Price": 170}
+ruggah = {"Name": "Ruggah", "Rating": 79, "Country": "Denmark",     "Rarity": "Elite",  "Role": "Coach", "Team": "Astralis",      "Price": 170}
+sidde =  {"Name": "Sidde",  "Rating": 70, "Country": "Brazil",      "Rarity": "Rare",   "Role": "Coach", "Team": "Furia",         "Price": 120}
+maaRaa = {"Name": "maaRaa", "Rating": 68, "Country": "Mongolia",    "Rarity": "Rare",   "Role": "Coach", "Team": "The Mongolz",   "Price": 120}
+taZ =    {"Name": "TaZ",    "Rating": 60, "Country": "Poland",      "Rarity": "Common", "Role": "Coach", "Team": "BC.Game",       "Price": 120}
+Fabre =  {"Name": "Fabre", 	"Rating": 58, "Country": "Turkey",     	"Rarity": "Common",	"Role": "Coach",  "Team":"Aurora",		  "Price": 100}
 
 allPlayer = [Jame, apex, kyxsan, Brollan, magixx, AleksiB, Fallen, maj3r, bLitz, 
              rain, HooXI, s1mpleP, deko, phzy, s1mple, electronic, StRoGo, device, jabbi, nafany, Ax1Le, Staehr, ryu,
@@ -106,7 +118,7 @@ allPlayer = [Jame, apex, kyxsan, Brollan, magixx, AleksiB, Fallen, maj3r, bLitz,
              mzinho,cobrazer,Jimpphat,xertioN,tN1R,yuurih,belchonokk,nota,Techno,
              dem0n, cmtry, dziugss, Krabeni, launX,
              karrigan, jcobbb, Twistzz, frozen, broky,
-             zont1x]
+             zont1x, zonic, b1ad3, sycrone, xTQZZZ, sAw, hally, dastan, ruggah, sidde, maaRaa, taZ, Fabre]
 
 IGLs = [Jame, apex, kyxsan, Brollan, magixx, AleksiB, Fallen, maj3r, bLitz]
 
