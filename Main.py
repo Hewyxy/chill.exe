@@ -179,6 +179,7 @@ async def open(ctx):
     user_id = ctx.author.id
     user = ctx.author
     user_data = db.get_user(user_id)
+    user_data = db.get_user(user_id)
     balance = user_data["balance"]
     
     

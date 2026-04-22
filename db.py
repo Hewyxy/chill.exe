@@ -12,13 +12,27 @@ def save_data(data):
 
 def get_user(user_id):
     data = load_data()
+    user_id = str(user_id)
 
-    if str(user_id) not in data:
-        data[user_id] = {"balance": 0, "level": 1,"Exp": 0, "Opened" : 0, "Roaster": {"Name": "", "Points" : 0,"Coach" : None, "IGL": None, "AWper" : None, "Rifelrs" : [] }, "cards": [], "DailyClaim": None }
-
+    if user_id not in data:
+        data[user_id] = {
+            "balance": 0,
+            "level": 1,
+            "Exp": 0,
+            "Opened": 0,
+            "Roaster": {
+                "Name": "",
+                "Points": 0,
+                "Coach": None,
+                "IGL": None,
+                "AWPer": None,
+                "Rifelrs": []
+            },
+            "cards": [],
+            "DailyClaim": None
+        }
         save_data(data)
-
-    return data[str(user_id)]
+    return data[user_id]
 
 def add_exp(user_id, amount):
     data = load_data()
