@@ -25,7 +25,10 @@ token = os.getenv("DISCORD_TOKEN")
 
 @bot.event
 async def on_ready():
+    await bot.tree.sync()
+    print("Slash commands synced")
     print(f'Logged in as {bot.user}')
+    
 
 
 #Command Help
@@ -116,9 +119,23 @@ async def balance(ctx):
     user_id = ctx.author.id
     user_data = db.get_user(user_id)
     balance = user_data["balance"]
-    embed = discord.Embed(title=f"{ctx.author.name}'s Balance", description=f"You have {balance} coins 💰", color=0x060f12)
+    embed = discord.Embed(title=f"{ctx.author.name}'s Balance", description=f"You have ${balance}💰", color=0x060f12)
     await ctx.send(embed=embed)
 
+#test for a slash command version of the balance command, to check if it works properly and looks good, with an embed to show the balance
+@bot.tree.command(name="balance", description="Check your balance")
+async def balance(interaction: discord.Interaction):
+    user_id = interaction.user.id
+    user_data = db.get_user(user_id)
+    balance = user_data["balance"]
+
+    embed = discord.Embed(
+        title=f"{interaction.user.name}'s Balance",
+        description=f"You have {balance} coins 💰",
+        color=0x060f12
+    )
+
+    await interaction.response.send_message(embed=embed)
 
 #profile command to show the user's balance, level, and cards in an embed
 @bot.command()
@@ -231,7 +248,7 @@ async def open(ctx):
 
             await interaction.response.edit_message(
             
-            content=f"Card was sold for {player['Price']}",
+            content=f"Card was sold for ${player['Price']}",
             view=None
             )
 
@@ -251,7 +268,13 @@ async def open(ctx):
             color=embed_color,
         )
 
-        await interaction.response.send_message(embed=embed, view = keepOrSell) 
+        await interaction.response.defer()
+
+        await interaction.followup.send(
+            content=f"Congrats {interaction.user.mention}!",
+            embed=embed,
+            view=keepOrSell
+)
     
     async def regularOpen(interaction: discord.Interaction):
         if interaction.user != ctx.author:
@@ -289,7 +312,6 @@ async def open(ctx):
 
         await asyncio.sleep(2)
 
-        await interaction.message.delete(   )
 
         if player["Rarity"] == "Common":
             embed_color = 0x00d443
@@ -304,7 +326,7 @@ async def open(ctx):
         keepOrSell = View()
         async def keep(interaction: discord.Interaction):
             if interaction.user != user:
-                await interaction.followup.send("That's not your card!", ephemeral=True, delete_after=5)
+                await interaction.followup.send("That's not your card!", ephemeral=True)
                 return
             db.add_card(ctx.author.id, player)
             
@@ -321,7 +343,7 @@ async def open(ctx):
 
             await interaction.response.edit_message(
             
-            content=f"Card was sold for {player['Price']}",
+            content=f"Card was sold for ${player['Price']}",
             view=None
             )
 
@@ -342,7 +364,7 @@ async def open(ctx):
             color=embed_color,
         )
 
-        await interaction.followup.send(embed=embed, view = keepOrSell) 
+        await interaction.followup.send(content=f"Congrats {ctx.author.mention}!", embed=embed, view = keepOrSell) 
 
 
 
@@ -477,7 +499,7 @@ async def sell(ctx, card_number: str):
             else:   
                 db.remove_card(ctx.author.id, card)
 
-        embed = discord.Embed(title="Cards Sold!", description=f"You sold all your cards for ${total_value} coins!", color=0x10F500)
+        embed = discord.Embed(title="Cards Sold!", description=f"You sold all your cards for ${total_value}!", color=0x10F500)
         await ctx.send(embed=embed, delete_after=5)
         return
     else:
@@ -531,8 +553,8 @@ async def sell(ctx, card_number: str):
         card = cards[card_number - 1]
         db.add_money(ctx.author.id, card["Price"])
         db.remove_card(ctx.author.id, card)
-        embed = discord.Embed(title="Card Sold!", description=f"You sold {card['Name']} for ${card['Price']} coins!", color=0x10F500)
-        await ctx.send(embed=embed, delete_after=5)
+        embed = discord.Embed(title="Card Sold!", description=f"You sold {card['Name']} for ${card['Price']}!", color=0x10F500)
+        await ctx.send(embed=embed)
 
 
 #Team command to set the user's team with a name, points, coach, IGL, AWPer, and 3 riflers,
