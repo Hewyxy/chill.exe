@@ -1,0 +1,397 @@
+import discord
+from discord.ext import commands
+from discord.ui import Button, View
+import asyncio
+import random
+from cardPacks import openRegularPack
+
+def setup(bot, db):
+    
+    #open pack command to open a card pack and add the card to the user's collection, with a button to open the pack and an embed to show the card that was opened, with different colors for different rarities
+    #We need to work on the system to day, to make everything looks clean on work properly.
+    @bot.command()
+    async def open(ctx):
+        #Pack price is 175 coins, check if the user has enough coins to open the pack
+        user_id = ctx.author.id
+        user = ctx.author
+        user_data = db.get_user(user_id)
+        user_data = db.get_user(user_id)
+        balance = user_data["balance"]
+        
+        
+        async def button_callback(interaction: discord.Interaction):
+            if interaction.user != user:
+                await interaction.response.send_message("That's not your pack!", ephemeral=True, delete_after=5)
+                return
+            if balance < 175:
+                balance_needed = 175 - balance  
+                embed = discord.Embed(title="Oh nooooo! :(",
+                                    description=f"You need {balance_needed} more coins to open a pack.", 
+                                    color=0xff0000)
+                await interaction.message.delete(   )
+                await ctx.send(embed=embed)
+                return
+
+            player = openRegularPack()
+            db.subtract_money(ctx.author.id, 175)
+            db.add_exp(ctx.author.id, 5)
+
+            await interaction.message.delete(   )
+
+            if player["Rarity"] == "Common":
+                embed_color = 0x00d443
+            elif player["Rarity"] == "Rare":
+                embed_color = 0x8600d4
+            elif player["Rarity"] == "Elite":
+                embed_color = 0xd40000
+            else:
+                embed_color = 0xf1c40f
+
+
+            keepOrSell = View()
+            async def keep(interaction: discord.Interaction):
+                if interaction.user != user:
+                    await interaction.followup.send("That's not your card!", ephemeral=True, delete_after=5)
+                    return
+                db.add_card(ctx.author.id, player)
+                await interaction.response.edit_message(
+                content="✅ Card added to your collection!",
+                view=None
+                )
+
+            async def sell(interaction: discord.Interaction):
+                if interaction.user != user:
+                    await interaction.followup.send("That's not your card!", ephemeral=True, delete_after=5)
+                    return
+                db.add_money(ctx.author.id, player['Price'])
+
+                await interaction.response.edit_message(
+                
+                content=f"Card was sold for ${player['Price']}",
+                view=None
+                )
+
+            keepCard = Button(label="KEEP", style=discord.ButtonStyle.grey)
+            keepCard.callback = keep
+
+            sellCard = Button(label="SELL", style=discord.ButtonStyle.red)
+            sellCard.callback = sell
+
+            keepOrSell.add_item(keepCard)
+            keepOrSell.add_item(sellCard)
+
+            
+            embed = discord.Embed(
+                title=f"You got {player['Name']}!",
+                description=f"Rarity: {player['Rarity']}\nRating: {player['Rating']}\nRole: {player['Role']}\nCountry: {player['Country']}\n\nPrice: {player['Price']}",
+                color=embed_color,
+            )
+
+            await interaction.response.defer()
+
+            await interaction.followup.send(
+                content=f"Congrats {interaction.user.mention}!",
+                embed=embed,
+                view=keepOrSell
+    )
+        
+        async def regularOpen(interaction: discord.Interaction):
+            if interaction.user != ctx.author:
+                await interaction.message.delete(   )
+                await interaction.response.send_message("That's not your pack!", ephemeral=True)
+                return
+            if balance < 175:
+                balance_needed = 175 - balance  
+                embed = discord.Embed(title="Oh nooooo! :(",
+                                    description=f"You need {balance_needed} more coins to open a pack.", 
+                                    color=0xff0000)
+                await interaction.message.delete(   )
+                await ctx.send(embed=embed)
+                return
+            
+
+            player = openRegularPack()
+            db.subtract_money(ctx.author.id, 175)
+            db.add_exp(ctx.author.id, 5)
+            await interaction.response.send_message("Opening pack...")
+
+            slowOpen = await interaction.original_response()
+
+            await asyncio.sleep(2)
+            await slowOpen.edit(content=f"Opening pack...\n\n{player['Country']}")
+
+            await asyncio.sleep(2)
+            await slowOpen.edit(content=f"Opening pack...\n\n{player['Country']}\n{player['Role']}")
+
+            await asyncio.sleep(2)
+            await slowOpen.edit(content=f"Opening pack...\n\n{player['Country']}\n{player['Role']}\n{player['Team']}")
+
+            await asyncio.sleep(2)
+            await slowOpen.edit(content=f"Opening pack...\n\n{player['Country']}\n{player['Role']}\n{player['Team']}\n{player['Rarity']}")
+
+            await asyncio.sleep(2)
+
+
+            if player["Rarity"] == "Common":
+                embed_color = 0x00d443
+            elif player["Rarity"] == "Rare":
+                embed_color = 0x8600d4
+            elif player["Rarity"] == "Elite":
+                embed_color = 0xd40000
+            else:
+                embed_color = 0xf1c40f
+
+
+            keepOrSell = View()
+            async def keep(interaction: discord.Interaction):
+                if interaction.user != user:
+                    await interaction.followup.send("That's not your card!", ephemeral=True)
+                    return
+                db.add_card(ctx.author.id, player)
+                
+                await interaction.response.edit_message(
+                content="✅ Card added to your collection!",
+                view=None
+                )
+
+            async def sell(interaction: discord.Interaction):
+                if interaction.user != user:
+                    await interaction.followup.send("That's not your card!", ephemeral=True, delete_after=5)
+                    return
+                db.add_money(ctx.author.id, player['Price'])
+
+                await interaction.response.edit_message(
+                
+                content=f"Card was sold for ${player['Price']}",
+                view=None
+                )
+
+            keepCard = Button(label="KEEP", style=discord.ButtonStyle.grey)
+            keepCard.callback = keep
+
+            sellCard = Button(label="SELL", style=discord.ButtonStyle.red)
+            sellCard.callback = sell
+
+            keepOrSell.add_item(keepCard)
+            keepOrSell.add_item(sellCard)
+
+            await slowOpen.delete()
+            
+            embed = discord.Embed(
+                title=f"You got {player['Name']}!",
+                description=f"Rarity: {player['Rarity']}\nRating: {player['Rating']}\nRole: {player['Role']}\nCountry: {player['Country']}\n\nPrice: {player['Price']}",
+                color=embed_color,
+            )
+
+            await interaction.followup.send(content=f"Congrats {ctx.author.mention}!", embed=embed, view = keepOrSell) 
+
+
+
+        OpenPack_Button = Button(label="Open Pack", style=discord.ButtonStyle.green)
+        OpenPack_Button.callback = regularOpen
+
+        FastOpen_Button = Button(label="Fast Open", style=discord.ButtonStyle.grey)
+        FastOpen_Button.callback = button_callback
+        
+
+        view = View()
+        view.add_item(OpenPack_Button)
+        view.add_item(FastOpen_Button)
+
+        probabilityMessage = discord.Embed(title="Pack Probabilities:")
+        probabilityMessage.add_field(name="Common", value="60%", inline=False)
+        probabilityMessage.add_field(name="Rare", value="  25%", inline=False)
+        probabilityMessage.add_field(name="Elite", value="9%", inline=False)
+        probabilityMessage.add_field(name="Legend", value=" 1%", inline=False)
+        message = await ctx.send(
+            embed=probabilityMessage,
+            view=view
+        )
+
+
+    #  Shows inventory of cards in an embed,
+    #  with pagination buttons to navigate through the inventory if there are more than 5 cards, 
+    # and only the user who issued the command can use the buttons to navigate through their inventory
+    @bot.command()
+    async def inv(ctx):
+        id = 0
+
+        def print_page():
+            cards = db.get_cards(ctx.author.id)
+            if not cards:
+                return "Your inventory is empty. Open some packs to get cards!"
+
+            embed = discord.Embed(
+                title=f"{ctx.author.name}'s Inventory",
+                color=0x060f12
+            )
+
+            for i in range(5):
+                if id + i >= len(cards):
+                    break
+
+                card = cards[id + i]
+                embed.add_field(
+                    name=f"{id + i + 1}. {card['Name']} ({card['Rating']})",
+                    value=f"Role: {card['Role']}\nRarity: {card['Rarity']}\nPrice: ${card['Price']}",
+                    inline=False
+                )
+            
+            embed.set_footer(text=f"Page {id // 5 + 1} of {(len(db.get_cards(ctx.author.id)) - 1) // 5 + 1}")
+
+            return embed
+
+        async def next_page(interaction: discord.Interaction):
+            nonlocal id
+
+            if interaction.user != ctx.author:
+                await interaction.response.send_message(
+                    "That's not your inventory!", ephemeral=True
+                )
+                return
+
+            cards = db.get_cards(ctx.author.id)
+
+            if id + 5 >= len(cards):
+                return
+
+            id += 5
+            await interaction.response.edit_message(embed=print_page())
+
+        async def previous_page(interaction: discord.Interaction):
+            nonlocal id
+
+            if interaction.user != ctx.author:
+                await interaction.response.send_message(
+                    "That's not your inventory!", ephemeral=True
+                )
+                return
+
+            if id - 5 < 0:
+                return
+
+            id -= 5
+            await interaction.response.edit_message(embed=print_page())
+
+        # Buttons
+        nextpage_button = Button(label=">", style=discord.ButtonStyle.gray)
+        nextpage_button.callback = next_page
+
+        previouspage_button = Button(label="<", style=discord.ButtonStyle.gray)
+        previouspage_button.callback = previous_page
+
+        inventory_view = View()
+        inventory_view.add_item(previouspage_button)
+        inventory_view.add_item(nextpage_button)
+
+        cards = db.get_cards(ctx.author.id)
+        if not cards:
+            await ctx.send("Your inventory is empty.", delete_after=5)
+            return
+
+        await ctx.send(embed=print_page(), view=inventory_view)
+
+    #Selling cards command, users can sell a card by its number in the inventory, 
+    # or sell all cards except legendary ones with the "all" option, 
+    # and only the user who issued the command can sell their cards
+    @bot.command()
+    async def sell(ctx, card_number: str):
+        if card_number.lower() == "all":
+            cards = db.get_cards(ctx.author.id)
+            if not cards:
+                embed = discord.Embed(title="Inventory Empty :/", description="Your inventory is empty. Open some packs to get cards!", color=0x060f12)
+                await ctx.send(embed=embed, delete_after=5)
+                return
+
+            total_value = sum(card["Price"] for card in cards)
+            db.add_money(ctx.author.id, total_value)
+            for card in cards:
+                if card in cards != card["Rarity"] == "Legend":
+                    continue
+                else:   
+                    db.remove_card(ctx.author.id, card)
+
+            embed = discord.Embed(title="Cards Sold!", description=f"You sold all your cards for ${total_value}!", color=0x10F500)
+            await ctx.send(embed=embed, delete_after=5)
+            return
+        else:
+            try:
+                card_number = int(card_number)
+            except ValueError:
+                embed = discord.Embed(title="Invalid Card Number :/", description="Please provide a valid card number or 'all' to sell all cards.", color=0xF50000)
+                await ctx.send(embed=embed, delete_after=5)
+                return
+        cards = db.get_cards(ctx.author.id)
+        
+        if not cards:
+            embed = discord.Embed(title="Inventory Empty :/", description="Your inventory is empty. Open some packs to get cards!", color=0x060f12)
+            await ctx.send(embed=embed, delete_after=5)
+            return
+
+        if card_number < 1 or card_number > len(cards):
+            embed = discord.Embed(title="Invalid Card Number :/", description=f"Please provide a valid card number between 1 and {len(cards)}.", color=0xF50000)
+            await ctx.send(embed=embed, delete_after=5)
+            return
+        if cards[card_number - 1]["Rarity"] == "Legend":
+            embed = discord.Embed(title="Are you sure?", description=f"Press the confirm button to sell {cards[card_number - 1]['Name']} for ${cards[card_number - 1]['Price']}", color=0xF50000)
+
+            async def cancel(interaction: discord.Interaction):
+                if interaction.user != ctx.author:
+                    await interaction.response.send_message("That's not your card!", ephemeral=True, delete_after=5)
+                    return
+                await interaction.response.edit_message(
+                    content="Sale cancelled.",
+                    view=None
+                )
+            async def confirm(interaction: discord.Interaction):
+                if interaction.user != ctx.author:
+                    await interaction.response.send_message("That's not your card!", ephemeral=True, delete_after=5)
+                    return
+                db.add_money(ctx.author.id, cards[card_number - 1]['Price'])
+                db.remove_card(ctx.author.id, cards[card_number - 1])
+                await interaction.response.edit_message(
+                    content=f"Card was sold for ${cards[card_number - 1]['Price']}",
+                    view=None
+                )
+            confirm_button = Button(label="Confirm", style=discord.ButtonStyle.red)
+            confirm_button.callback = confirm
+            cancel_button = Button(label="Cancel", style=discord.ButtonStyle.grey)
+            cancel_button.callback = cancel
+            view = View()
+            view.add_item(confirm_button)
+            view.add_item(cancel_button)
+            await ctx.send(embed=embed, view=view)
+        else:
+            card = cards[card_number - 1]
+            db.add_money(ctx.author.id, card["Price"])
+            db.remove_card(ctx.author.id, card)
+            embed = discord.Embed(title="Card Sold!", description=f"You sold {card['Name']} for ${card['Price']}!", color=0x10F500)
+            await ctx.send(embed=embed)
+
+    #Work on the making cooldown for the daily command, so that users can only claim their daily reward once every 5 hours,
+    #  and if they try to claim it again before the cooldown is over, 
+    # they will get a message telling them how much time is left until they can claim it again.
+    @bot.command()
+    @commands.is_owner() #Will be enabled when the bot is done, for testing purposes only the owner can use this command to test
+    async def rob(ctx, member: discord.Member):
+        if member == ctx.author:
+            await ctx.send("You cannot rob yourself!", delete_after=5)
+            return
+        if member.bot:
+            await ctx.send("You cannot rob a bot!", delete_after=5)
+            return
+
+        robber_data = db.get_user(ctx.author.id)
+        victim_data = db.get_user(member.id)
+
+        if victim_data["balance"] < 100:
+            embed = discord.Embed(title="Robbery Failed", description=f"The user you are trying to rob has less than $100, you cannot rob them.", color=0xF50000)
+            await ctx.send(embed=embed, delete_after=5)
+            return
+
+        amount_stolen = random.randint(50, min(300, victim_data["balance"]))
+        db.subtract_money(member.id, amount_stolen)
+        db.add_money(ctx.author.id, amount_stolen)
+
+        embed = discord.Embed(title="Robbery Successful!", description=f"You have successfully robbed {member.name} and stolen ${amount_stolen}!", color=0x10F500)
+        await ctx.send(embed=embed, delete_after=5)
