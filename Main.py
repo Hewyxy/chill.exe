@@ -5,7 +5,7 @@ import discord
 from discord.ext import commands
 from discord.ui import Button, View
 from dotenv import load_dotenv
-
+from discord import activity, ActivityType
 # Other imports
 import os
 import random
@@ -35,6 +35,9 @@ async def on_ready():
     await bot.tree.sync()
     print("Slash commands synced")
     print(f'Logged in as {bot.user}')
+    activity = discord.Activity(type=discord.ActivityType.playing, name="fixing bugs")
+    await bot.change_presence(activity=activity)
+    print("Activity set")
     
 
 
