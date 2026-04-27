@@ -42,6 +42,8 @@ def setup(bot, db):
                 embed_color = 0x00d443
             elif player["Rarity"] == "Rare":
                 embed_color = 0x8600d4
+            elif player["Rarity"] == "Epic":
+                embed_color = 0xf100f5
             elif player["Rarity"] == "Elite":
                 embed_color = 0xd40000
             else:
@@ -136,6 +138,8 @@ def setup(bot, db):
                 embed_color = 0x00d443
             elif player["Rarity"] == "Rare":
                 embed_color = 0x8600d4
+            elif player["Rarity"] == "Epic":
+                embed_color = 0xf100f5
             elif player["Rarity"] == "Elite":
                 embed_color = 0xd40000
             else:
@@ -198,11 +202,15 @@ def setup(bot, db):
         view.add_item(OpenPack_Button)
         view.add_item(FastOpen_Button)
 
-        probabilityMessage = discord.Embed(title="Pack Probabilities:")
+        probabilityMessage = discord.Embed(title="Regular Pack")
+        probabilityMessage.add_field(name="Pack Probabilities:", value="", inline=False)
         probabilityMessage.add_field(name="Common", value="60%", inline=False)
-        probabilityMessage.add_field(name="Rare", value="  25%", inline=False)
-        probabilityMessage.add_field(name="Elite", value="9%", inline=False)
+        probabilityMessage.add_field(name="Rare", value="25%", inline=False)
+        probabilityMessage.add_field(name="Epic", value="10%", inline=False)
+        probabilityMessage.add_field(name="Elite", value=" 4%", inline=False)
         probabilityMessage.add_field(name="Legend", value=" 1%", inline=False)
+        probabilityMessage.set_footer(text="Price: $175")
+        
         message = await ctx.send(
             embed=probabilityMessage,
             view=view
