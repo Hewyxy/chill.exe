@@ -6,6 +6,7 @@ from discord.ext import commands
 from discord.ui import Button, View
 from dotenv import load_dotenv
 from discord import activity, ActivityType
+from discord.ext import tasks
 # Other imports
 import os
 import random
@@ -33,11 +34,15 @@ team.setup(bot, db)
 @bot.event
 async def on_ready():
     await bot.tree.sync()
+    backup_database.start() 
     print("Slash commands synced")
     print(f'Logged in as {bot.user}')
     activity = discord.Activity(type=discord.ActivityType.playing, name="We are in beta, use !helpme for commands")
     await bot.change_presence(activity=activity)
     print("Activity set")
+
+    user = await bot.fetch_user(449584926359158789)
+    await user.send("✅ Бот запущен!")
     
 
 
@@ -61,5 +66,16 @@ async def on_error(event, *args, **kwargs):
     import traceback
     print(traceback.format_exc())
 # Handle errors specific to the clear command
+
+OWNER_ID = 449584926359158789
+
+@tasks.loop(hours=24)
+async def backup_database():
+    user = await bot.fetch_user(OWNER_ID)
+    await user.send(
+        content="📦 Автобэкап базы данных",
+        file=discord.File("database.json")
+    )
+
 
 bot.run(token)

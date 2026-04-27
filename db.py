@@ -1,57 +1,124 @@
-import os
-from pymongo import MongoClient
+import json
 
-client = MongoClient(os.environ.get("MONGO_URL"))
-db = client["chillbot"]
-users = db["users"]
+FILE = "database.json"
 
-DEFAULT_USER = lambda uid: {
-    "_id": uid,
-    "balance": 0,
-    "level": 1,
-    "Exp": 0,
-    "Opened": 0,
-    "Roaster": {"Name": "", "Points": 0, "Coach": None, "IGL": None, "AWPer": None, "Riflers": []},
-    "cards": [],
-    "DailyClaim": None
-}
+def load_data():
+    with open(FILE, "r") as f:
+        return json.load(f)
+
+def save_data(data):
+    with open(FILE, "w") as f:
+        json.dump(data, f, indent=4)
 
 def get_user(user_id):
-    uid = str(user_id)
-    user = users.find_one({"_id": uid})
-    if not user:
-        user = DEFAULT_USER(uid)
-        users.insert_one(user)
-    return user
+    data = load_data()
+    user_id = str(user_id)
 
-def save_user(user_id, data):
-    users.update_one({"_id": str(user_id)}, {"$set": data}, upsert=True)
+    if user_id not in data:
+        data[user_id] = {
+            "balance": 0,
+            "level": 1,
+            "Exp": 0,
+            "Opened": 0,
+            "Roaster": {
+                "Name": "",
+                "Points": 0,
+                "Coach": None,
+                "IGL": None,
+                "AWPer": None,
+                "Rifelrs": []
+            },
+            "cards": [],
+            "DailyClaim": None
+        }
+        save_data(data)
+    return data[user_id]
 
 def add_exp(user_id, amount):
-    user = get_user(user_id)
-    user["Exp"] += amount
-    user["Opened"] += 1
-    if user["Exp"] >= 100 * user["level"]:
-        user["Exp"] -= 100 * user["level"]
-        user["level"] += 1
-    save_user(user_id, user)
+    data = load_data()
+
+    user_id = str(user_id)
+    data[user_id]["Opened"] += 1
+    currentLvl = data[user_id]["level"]
+
+    exptoRankUp = 100 * currentLvl
+
+    if data[user_id]["Exp"] >= exptoRankUp:
+        data[user_id]["level"] += 1
+        data[user_id]["Exp"] -= exptoRankUp
+    user_id = str(user_id)
+
+    if user_id not in data:
+        data[user_id] = {"balance": 0, "level": 1,"Exp": 0, "Opened" : 0, "Roaster": {"Name": "", "Points" : 0,"Coach" : None, "IGL": None, "AWper" : None, "Rifelrs" : [] }, "cards": [], "DailyClaim": None }
+
+    data[user_id]["Exp"] += amount
+
+    save_data(data)
 
 def add_money(user_id, amount):
-    user = get_user(user_id)
-    user["balance"] += amount
-    save_user(user_id, user)
+    data = load_data()
+
+    user_id = str(user_id)
+
+    if user_id not in data:
+        data[user_id] = {"balance": 0, "level": 1,"Exp": 0, "Opened" : 0, "Roaster": {"Name": "", "Points" : 0,"Coach" : None, "IGL": None, "AWper" : None, "Rifelrs" : [] }, "cards": [],"DailyClaim": None }
+
+    data[user_id]["balance"] += amount
+
+    save_data(data)
+
 
 def subtract_money(user_id, amount):
-    user = get_user(user_id)
-    user["balance"] -= amount
-    save_user(user_id, user)
+    data = load_data()
+
+    user_id = str(user_id)
+
+    if user_id not in data:
+        data[user_id] = {"balance": 0, "level": 1,"Exp": 0, "Opened" : 0, "Roaster": {"Name": "", "Points" : 0,"Coach" : None, "IGL": None, "AWper" : None, "Rifelrs" : [] }, "cards": [], "DailyClaim": None }
+
+
+    data[user_id]["balance"] -= amount
+
+    save_data(data)
 
 def add_card(user_id, card):
-    users.update_one({"_id": str(user_id)}, {"$push": {"cards": card}}, upsert=True)
+    data = load_data()
+
+    user_id = str(user_id)
+
+    if user_id not in data:
+
+        data[user_id] = {"balance": 0, "level": 1,"Exp": 0, "Opened" : 0, "Roaster": {"Name": "", "Points" : 0,"Coach" : None, "IGL": None, "AWper" : None, "Rifelrs" : [] }, "cards": [], "DailyClaim": None }
+
+    if "cards" not in data[user_id]:
+
+        data[user_id]["cards"] = []
+
+    data[user_id]["cards"].append(card)
+    
+    save_data(data)
 
 def remove_card(user_id, card):
-    users.update_one({"_id": str(user_id)}, {"$pull": {"cards": card}})
+    data = load_data()
+
+    user_id = str(user_id)
+
+    if user_id not in data:
+        return
+
+    if "cards" not in data[user_id]:
+        return
+
+    if card in data[user_id]["cards"]:
+        data[user_id]["cards"].remove(card)
+        save_data(data)
 
 def get_cards(user_id):
-    user = get_user(user_id)
-    return user.get("cards", [])
+    data = load_data()
+
+    user_id = str(user_id)
+
+    if user_id not in data:
+        return []
+
+    return data[user_id].get("cards", [])
