@@ -17,6 +17,7 @@ def setup(bot, db):
         AWPer = roaster["AWper"]
         riflers = roaster["Rifelrs"]
 
+
         power = coach["Rating"] if coach else 0
         power += iGL["Rating"] if iGL else 0
         power += AWPer["Rating"] if AWPer else 0
