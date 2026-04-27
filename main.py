@@ -38,6 +38,7 @@ async def on_ready():
     print("Slash commands synced")
     print(f'Logged in as {bot.user}')
     activity = discord.Activity(type=discord.ActivityType.playing, name="We are in beta, use !helpme for commands")
+    thoughts = discord.Activity(type=discord.ActivityType.listening, name="the sound of the server growing")
     await bot.change_presence(activity=activity)
     print("Activity set")
 

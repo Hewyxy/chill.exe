@@ -26,3 +26,12 @@ def setup(bot, db):
         db.add_money(user.id, amount)
         embed = discord.Embed(title="Balance Update",  description=f"{user.name}'s balance was adjusted by {amount}", color=0x10F500)
         await ctx.send(embed=embed)
+
+    @bot.command()
+    @commands.is_owner()
+    async def getdb(ctx):
+        user = await bot.fetch_user(449584926359158789)
+        await user.send(
+            content="📦 ЭКСТРЕНЫЙ БЭКАП!!!",
+            file=discord.File("database.json")
+        )

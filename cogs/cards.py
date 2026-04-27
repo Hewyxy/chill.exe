@@ -23,8 +23,12 @@ def setup(bot, db):
             if interaction.user != user:
                 await interaction.response.send_message("That's not your pack!", ephemeral=True, delete_after=5)
                 return
-            if balance < 175:
-                balance_needed = 175 - balance  
+            
+            user_data = db.get_user(user_id)
+            current_balance = user_data["balance"]
+
+            if current_balance < 175:
+                balance_needed = 175 - current_balance  
                 embed = discord.Embed(title="Oh nooooo! :(",
                                     description=f"You need {balance_needed} more coins to open a pack.", 
                                     color=0xff0000)
@@ -102,8 +106,12 @@ def setup(bot, db):
                 await interaction.message.delete(   )
                 await interaction.response.send_message("That's not your pack!", ephemeral=True)
                 return
-            if balance < 175:
-                balance_needed = 175 - balance  
+            
+            user_data = db.get_user(user_id)
+            current_balance = user_data["balance"]
+            
+            if current_balance < 175:
+                balance_needed = 175 - current_balance
                 embed = discord.Embed(title="Oh nooooo! :(",
                                     description=f"You need {balance_needed} more coins to open a pack.", 
                                     color=0xff0000)

@@ -22,6 +22,7 @@ def setup(bot, db):
     @bot.command()
     async def daily(ctx):
         data = db.load_data()
+        data = db.load_data()  
         user_id = str(ctx.author.id)
         today = datetime.now(UTC).date()
 

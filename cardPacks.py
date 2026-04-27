@@ -132,14 +132,14 @@ AWPers = [Zywoo, m0nesy, sh1ro, p910, w0nderful, woxic, torzsi]
 
 
 def openRegularPack():
-    rarity_roll = random.randint(1, 100)
-    if rarity_roll <= 60:
+    rarity_roll = random.randint(1, 1000)
+    if rarity_roll <= 600:
         rarity = "Common"
-    elif rarity_roll <= 85:
+    elif rarity_roll <= 850:
         rarity = "Rare"
-    elif rarity_roll <= 95:
+    elif rarity_roll <= 950:
         rarity = "Epic"
-    elif rarity_roll <= 99:
+    elif rarity_roll <= 990:
         rarity = "Elite"
     else:
         rarity = "Legend"
