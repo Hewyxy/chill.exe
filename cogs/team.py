@@ -14,7 +14,7 @@ def setup(bot, db):
         teamPoints = roaster["Points"]
         coach = roaster["Coach"]
         iGL = roaster["IGL"]
-        AWPer = roaster["AWper"]
+        AWPer = roaster["AWPer"]
         riflers = roaster["Rifelrs"]
 
 
@@ -29,4 +29,169 @@ def setup(bot, db):
         embed.add_field(name="Riflers:", value="\n".join(r["Name"] for r in riflers) if riflers else "Not set", inline=False)
         embed.add_field(name="\nPower:", value=f"{power:.2f}", inline=False)
 
+        await ctx.send(embed=embed)
+
+    @bot.command()
+    async def setName(ctx, teamName):
+        user = ctx.author.id
+        db.get_user(user)
+        data = db.load_data()
+        data[str(user)]["Roaster"]["Name"] = teamName
+        db.save_data(data)
+        embed = discord.Embed(title=f"Team name set to {teamName}!", color=0x060f12)
+        await ctx.send(embed=embed)
+
+    @bot.command()
+    async def setCoach(ctx, id: int):
+        user = ctx.author.id
+        data = db.load_data()
+        user_data = data.get(str(user))
+        id = id - 1
+
+        if not user_data:
+            embed = discord.Embed(title="Error", description="User not found.", color=0xF50000)
+            await ctx.send(embed=embed)
+            return
+
+        cards = user_data.get("cards", [])
+
+        if id < 0 or id >= len(cards):
+            embed = discord.Embed(title="Error", description="Invalid card ID.", color=0xF50000)
+            await ctx.send(embed=embed)
+            return
+
+        player = cards[id]
+
+        if player["Role"] != "Coach":
+            embed = discord.Embed(title="Error", description="This card is not a Coach.", color=0xF50000)
+            await ctx.send(embed=embed)
+            return
+
+        user_data["Roaster"]["Coach"] = player
+        user_data['cards'].pop(id)
+        db.save_data(data)
+
+        embed = discord.Embed(
+            title=f"Coach set to {player['Name']}!",
+            color=0x060f12
+        )
+        await ctx.send(embed=embed)
+
+    @bot.command()
+    async def setIGL(ctx, id: int):
+        user = str(ctx.author.id)
+        data = db.load_data()
+        user_data = data.get(user)
+        id = id - 1
+
+        if not user_data:
+            await ctx.send(embed=discord.Embed(title="Error", description="User not found.", color=0xF50000))
+            return
+
+        cards = user_data.get("cards", [])
+
+        if id < 0 or id >= len(cards):
+            await ctx.send(embed=discord.Embed(title="Error", description="Invalid card ID.", color=0xF50000))
+            return
+
+        player = cards[id]
+
+        if player["Role"] != "IGL":
+            await ctx.send(embed=discord.Embed(title="Error", description="This card is not an IGL.", color=0xF50000))
+            return
+
+        data[user]["Roaster"]["IGL"] = player
+        data[user]["cards"].pop(id)
+        db.save_data(data)
+
+        await ctx.send(embed=discord.Embed(title=f"IGL set to {player['Name']}!", color=0x060f12))
+    
+    @bot.command()
+    async def setAWP(ctx, id: int):
+        user = str(ctx.author.id)
+        data = db.load_data()
+        user_data = data.get(user)
+        id = id - 1
+
+        if not user_data:
+            await ctx.send(embed=discord.Embed(title="Error", description="User not found.", color=0xF50000))
+            return
+
+        cards = user_data.get("cards", [])
+
+        if id < 0 or id >= len(cards):
+            await ctx.send(embed=discord.Embed(title="Error", description="Invalid card ID.", color=0xF50000))
+            return
+
+        player = cards[id]
+
+        if player["Role"] != "AWPer":
+            await ctx.send(embed=discord.Embed(title="Error", description="This card is not an AWPer.", color=0xF50000))
+            return
+
+        data[user]["Roaster"]["AWPer"] = player
+        data[user]["cards"].pop(id)
+        db.save_data(data)
+
+        await ctx.send(embed=discord.Embed(title=f"AWPer set to {player['Name']}!", color=0x060f12))
+
+    @bot.command()
+    async def setRifler(ctx, id: int):
+        user = str(ctx.author.id)
+        data = db.load_data()
+        user_data = data.get(user)
+        id = id - 1
+
+        if not user_data:
+            embed = discord.Embed(title="Error", description="User not found.", color=0xF50000)
+            await ctx.send(embed=embed)
+            return
+
+        cards = user_data.get("cards", [])
+
+        if id < 0 or id >= len(cards):
+            embed = discord.Embed(title="Error", description="Invalid card ID.", color=0xF50000)
+            await ctx.send(embed=embed)
+            return
+
+        player = cards[id]
+
+        if player["Role"] != "Rifler":
+            embed = discord.Embed(title="Error", description="This card is not a Rifler.", color=0xF50000)
+            await ctx.send(embed=embed)
+            return
+
+        roaster = user_data["Roaster"]
+        riflers = roaster["Rifelrs"]
+
+        if len(riflers) >= 3:
+            embed = discord.Embed(title="Error", description="You can only have 3 Riflers in your team.", color=0xF50000)
+            await ctx.send(embed=embed)
+            return
+
+        riflers.append(player)
+        user_data['cards'].pop(id)
+        db.save_data(data)
+
+        embed = discord.Embed(
+            title=f"Rifler {player['Name']} added to your team!",
+            color=0x060f12
+        )
+        await ctx.send(embed=embed)
+
+    @bot.command()
+    async def clearRoaster(ctx):
+        user = str(ctx.author.id)
+        data = db.load_data()   
+        data[str(user)]["cards"].append(data[str(user)]["Roaster"]["Coach"]) if data[str(user)]["Roaster"]["Coach"] else None
+        data[str(user)]["cards"].append(data[str(user)]["Roaster"]["IGL"]) if data[str(user)]["Roaster"]["IGL"] else None
+        data[str(user)]["cards"].append(data[str(user)]["Roaster"]["AWPer"]) if data[str(user)]["Roaster"]["AWPer"] else None
+        for rifler in data[str(user)]["Roaster"]["Rifelrs"]:
+            data[str(user)]["cards"].append(rifler)
+        data[str(user)]["Roaster"]["Coach"] = None
+        data[str(user)]["Roaster"]["IGL"] = None
+        data[str(user)]["Roaster"]["AWPer"] = None
+        data[str(user)]["Roaster"]["Rifelrs"] = []
+        db.save_data(data)
+        embed = discord.Embed(title="Team cleared!", description="Your team has been cleared. You can start building a new one!", color=0x060f12)
         await ctx.send(embed=embed)
