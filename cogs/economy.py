@@ -31,7 +31,7 @@ def setup(bot, db):
             await ctx.send(embed=embed)
             return
 
-        reward = random.randint(850, 1350)
+        reward = random.randint(650, 1150)
         db.add_money(ctx.author.id, reward)
         data = db.load_data()
         data[user_id]["DailyClaim"] = str(today)

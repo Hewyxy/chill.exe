@@ -34,7 +34,7 @@ deko =      {"Name": "deko",      "Rating": 86, "Country": "Russia",  "Rarity": 
 
 sh1ro =     {"Name": "sh1ro",     "Rating": 78, "Country": "Russia",      "Rarity": "Epic", "Role": "AWPer", "Team": "Spirit",           "Price": 219,}
 gr1ks =     {"Name": "gr1ks",     "Rating": 77, "Country": "Belarus",     "Rarity": "Epic", "Role": "AWPer", "Team": "BIG",              "Price": 211,}
-s1mple =    {"Name": "s1mple",    "Rating": 76, "Country": "Ukraine",     "Rarity": "Epic", "Role": "AWPer", "Team": "BC.Game",          "Price": 290,}
+s1mple =    {"Name": "s1mple",    "Rating": 76, "Country": "Ukraine",     "Rarity": "Epic", "Role": "AWPer", "Team": "BC.Game",          "Price": 215,}
 
 phzy =      {"Name": "phzy",      "Rating": 71, "Country": "Sweden",      "Rarity": "Rare", "Role": "AWPer", "Team": "Astralis",         "Price": 195,}
 molodoy =   {"Name": "molodoy",   "Rating": 74, "Country": "Kazakhstan",  "Rarity": "Rare", "Role": "AWPer",  "Team": "Furia",           "Price": 203,}

@@ -11,7 +11,7 @@ def setup(bot, db):
     #We need to work on the system to day, to make everything looks clean on work properly.
     @bot.command()
     async def open(ctx):
-        #Pack price is 175 coins, check if the user has enough coins to open the pack
+        #Pack price is 200 coins, check if the user has enough coins to open the pack
         user_id = ctx.author.id
         user = ctx.author
         user_data = db.get_user(user_id)
@@ -27,8 +27,8 @@ def setup(bot, db):
             user_data = db.get_user(user_id)
             current_balance = user_data["balance"]
 
-            if current_balance < 175:
-                balance_needed = 175 - current_balance  
+            if current_balance < 200:
+                balance_needed = 200 - current_balance  
                 embed = discord.Embed(title="Oh nooooo! :(",
                                     description=f"You need {balance_needed} more coins to open a pack.", 
                                     color=0xff0000)
@@ -37,7 +37,7 @@ def setup(bot, db):
                 return
 
             player = openRegularPack()
-            db.subtract_money(ctx.author.id, 175)
+            db.subtract_money(ctx.author.id, 200)
             db.add_exp(ctx.author.id, 5)
 
             await interaction.message.delete(   )
@@ -110,8 +110,8 @@ def setup(bot, db):
             user_data = db.get_user(user_id)
             current_balance = user_data["balance"]
             
-            if current_balance < 175:
-                balance_needed = 175 - current_balance
+            if current_balance < 200:
+                balance_needed = 200 - current_balance
                 embed = discord.Embed(title="Oh nooooo! :(",
                                     description=f"You need {balance_needed} more coins to open a pack.", 
                                     color=0xff0000)
@@ -121,7 +121,7 @@ def setup(bot, db):
             
 
             player = openRegularPack()
-            db.subtract_money(ctx.author.id, 175)
+            db.subtract_money(ctx.author.id, 200)
             db.add_exp(ctx.author.id, 5)
             await interaction.response.send_message("Opening pack...")
 
@@ -217,7 +217,7 @@ def setup(bot, db):
         probabilityMessage.add_field(name="Epic", value="10%", inline=False)
         probabilityMessage.add_field(name="Elite", value=" 4%", inline=False)
         probabilityMessage.add_field(name="Legend", value=" 1%", inline=False)
-        probabilityMessage.set_footer(text="Price: $175")
+        probabilityMessage.set_footer(text="Price: $200")
         
         message = await ctx.send(
             embed=probabilityMessage,
