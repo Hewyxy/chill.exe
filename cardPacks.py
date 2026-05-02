@@ -222,4 +222,4 @@ def calcPrice(cards):
 
     
 
-calcPrice(allPlayer)
+#calcPrice(allPlayer)

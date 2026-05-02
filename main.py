@@ -29,7 +29,7 @@ economy.setup(bot, db)
 cards.setup(bot, db)
 fun.setup(bot, db)
 team.setup(bot, db)
-#match.setup(bot, db)
+match.setup(bot, db)
 
 @bot.event
 async def on_ready():
