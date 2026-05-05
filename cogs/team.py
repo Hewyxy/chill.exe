@@ -32,15 +32,19 @@ def setup(bot, db):
         await ctx.send(embed=embed)
 
     @bot.command()
+    #Create a charecter limit
     async def setName(ctx, teamName):
         user = ctx.author.id
         db.get_user(user)
         data = db.load_data()
         data[str(user)]["Roaster"]["Name"] = teamName
         db.save_data(data)
-        embed = discord.Embed(title=f"Team name set to {teamName}!", color=0x060f12)
+        if len(teamName) > 10:
+            embed = discord.Embed(title=f"Error :/", description="Charecter limit is 10.",color=0xF50000)
+        else:
+            embed = discord.Embed(title=f"Team name set to {teamName}!", color=0x060f12)
         await ctx.send(embed=embed)
-
+    #make sure if player is already in team, to remove it and add new one
     @bot.command()
     async def setCoach(ctx, id: int):
         user = ctx.author.id
