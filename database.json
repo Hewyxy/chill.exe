@@ -1,2 +1,274 @@
 {
+    "0001": {
+        "balance": 0,
+        "level": 0,
+        "Exp": 0,
+        "Opened": 0,
+        "Roaster": {
+            "Name": "Vitality",
+            "Points": 0,
+            "Coach": {
+                "Name": "XTQZZZ",
+                "Rating": 88,
+                "Country": "France",
+                "Rarity": "Elite",
+                "Role": "Coach",
+                "Team": "Vitality",
+                "Price": 211
+            },
+            "IGL": {
+                "Name": "apEx",
+                "Rating": 77,
+                "Country": "France",
+                "Rarity": "Epic",
+                "Role": "IGL",
+                "Team": "Vitality",
+                "Price": 185
+            },
+            "AWPer": {
+                "Name": "ZywOo",
+                "Rating": 99,
+                "Country": "France",
+                "Rarity": "Legend",
+                "Role": "AWPer",
+                "Team": "Vitality",
+                "Price": 237
+            },
+            "Rifelrs": [
+                {
+                    "Name": "flameZ",
+                    "Rating": 87,
+                    "Country": "Israel",
+                    "Rarity": "Elite",
+                    "Role": "Rifler",
+                    "Team": "Vitality",
+                    "Price": 209
+                },
+                {
+                    "Name": "ropz",
+                    "Rating": 87,
+                    "Country": "Estonia",
+                    "Rarity": "Elite",
+                    "Role": "Rifler",
+                    "Team": "Vitality",
+                    "Price": 209
+                },
+                {
+                    "Name": "mezzi",
+                    "Rating": 65,
+                    "Country": "Britain",
+                    "Rarity": "Rare",
+                    "Role": "Rifler",
+                    "Team": "Vitality",
+                    "Price": 156
+                }
+            ]
+        },
+        "cards": [],
+        "DailyClaim": "2026-05-01"
+    },
+    "0002": {
+        "balance": 0,
+        "level": 0,
+        "Exp": 0,
+        "Opened": 0,
+        "Roaster": {
+            "Name": "Falcons",
+            "Points": 0,
+            "Coach": {
+                "Name": "Zonic",
+                "Rating": 98,
+                "Country": "Denmark",
+                "Rarity": "Legend",
+                "Role": "Coach",
+                "Team": "Falcons",
+                "Price": 235
+            },
+            "IGL": {
+                "Name": "karrigan",
+                "Rating": 70,
+                "Country": "Denmark",
+                "Rarity": "Rare",
+                "Role": "IGL",
+                "Team": "Falcons",
+                "Price": 168
+            },
+            "AWPer": {
+                "Name": "m0NESY",
+                "Rating": 88,
+                "Country": "Russia",
+                "Rarity": "Elite",
+                "Role": "AWPer",
+                "Team": "Falcons",
+                "Price": 211
+            },
+            "Rifelrs": [
+                {
+                    "Name": "NiKo",
+                    "Rating": 88,
+                    "Country": "Bosnia",
+                    "Rarity": "Elite",
+                    "Role": "Rifler",
+                    "Team": "Falcons",
+                    "Price": 211
+                },
+                {
+                    "Name": "kyousuke",
+                    "Rating": 85,
+                    "Country": "Russia",
+                    "Rarity": "Elite",
+                    "Role": "Rifler",
+                    "Team": "Falcons",
+                    "Price": 205
+                },
+                {
+                    "Name": "TeSeS",
+                    "Rating": 62,
+                    "Country": "Denmark",
+                    "Rarity": "Common",
+                    "Role": "Rifler",
+                    "Team": "Falcons",
+                    "Price": 148
+                }
+            ]
+        },
+        "cards": [],
+        "DailyClaim": "2026-05-01"
+    },
+    "0003": {
+        "balance": 0,
+        "level": 0,
+        "Exp": 0,
+        "Opened": 0,
+        "Roaster": {
+            "Name": "NaVi",
+            "Points": 0,
+            "Coach": {
+                "Name": "B1ad3",
+                "Rating": 98,
+                "Country": "Ukraine",
+                "Rarity": "Legend",
+                "Role": "Coach",
+                "Team": "Natus Vincere",
+                "Price": 235
+            },
+            "IGL": {
+                "Name": "Aleksib",
+                "Rating": 71,
+                "Country": "Finland",
+                "Rarity": "Rare",
+                "Role": "IGL",
+                "Team": "Natus Vincere",
+                "Price": 170
+            },
+            "AWPer": {
+                "Name": "w0nderful",
+                "Rating": 66,
+                "Country": "Ukraine",
+                "Rarity": "Rare",
+                "Role": "AWPer",
+                "Team": "Natus Vincere",
+                "Price": 159
+            },
+            "Rifelrs": [
+                {
+                    "Name": "makazze",
+                    "Rating": 80,
+                    "Country": "Kosovo",
+                    "Rarity": "Epic",
+                    "Role": "Rifler",
+                    "Team": "Natus Vincere",
+                    "Price": 192
+                },
+                {
+                    "Name": "b1t",
+                    "Rating": 71,
+                    "Country": "Ukraine",
+                    "Rarity": "Rare",
+                    "Role": "Rifler",
+                    "Team": "Natus Vincere",
+                    "Price": 171
+                },
+                {
+                    "Name": "iM",
+                    "Rating": 67,
+                    "Country": "Romania",
+                    "Rarity": "Rare",
+                    "Role": "Rifler",
+                    "Team": "Natus Vincere",
+                    "Price": 160
+                }
+            ]
+        },
+        "cards": [],
+        "DailyClaim": "2026-05-01"
+    },
+    "0004": {
+        "balance": 0,
+        "level": 0,
+        "Exp": 0,
+        "Opened": 0,
+        "Roaster": {
+            "Name": "Spirit",
+            "Points": 0,
+            "Coach": {
+                "Name": "hally",
+                "Rating": 87,
+                "Country": "Russia",
+                "Rarity": "Elite",
+                "Role": "Coach",
+                "Team": "Spirit",
+                "Price": 208
+            },
+            "IGL": {
+                "Name": "magixx",
+                "Rating": 79,
+                "Country": "Russia",
+                "Rarity": "Epic",
+                "Role": "IGL",
+                "Team": "Spirit",
+                "Price": 190
+            },
+            "AWPer": {
+                "Name": "sh1ro",
+                "Rating": 78,
+                "Country": "Russia",
+                "Rarity": "Epic",
+                "Role": "AWPer",
+                "Team": "Spirit",
+                "Price": 187
+            },
+            "Rifelrs": [
+                {
+                    "Name": "donk",
+                    "Rating": 99,
+                    "Country": "Russia",
+                    "Rarity": "Legend",
+                    "Role": "Rifler",
+                    "Team": "Spirit",
+                    "Price": 240
+                },
+                {
+                    "Name": "tN1R",
+                    "Rating": 61,
+                    "Country": "Belarus",
+                    "Rarity": "Common",
+                    "Role": "Rifler",
+                    "Team": "Spirit",
+                    "Price": 145
+                },
+                {
+                    "Name": "zont1x",
+                    "Rating": 56,
+                    "Country": "Ukraine",
+                    "Rarity": "Common",
+                    "Role": "Rifler",
+                    "Team": "Spirit",
+                    "Price": 134
+                }
+            ]
+        },
+        "cards": [],
+        "DailyClaim": "2026-05-01"
+    }
 }
