@@ -24,12 +24,25 @@ chill.exe is a Discord bot made for fun and casual use with friends. It includes
 - `!daily` — claim your daily reward  
 
 ### Cards
+- `!open` — opens card pack
 - `!inv` — shows your card inventory  
 - `!sell <number>` — sells a card by its number  
 - `!sell all` — sells all cards except legendary ones  
 
 ### Moderation
-- `!clear <amount>` — deletes a specified number of messages (up to 500)  
+- `!clear <amount>` — deletes a specified number of messages (up to 500) 
+
+### Team
+-  `!team` -- shows your current roaster
+-  `!setName <name>` -- sets team name (limited to 10 char)
+-  `!setCoach <id>` -- sets coach for the team
+-  `!setIGL <id>` -- sets IGL for the team
+-  `!setAWP <id>` -- sets AWPer for the team
+-  `!setRifler <id>` -- sets rifler for the team
+-  `!clearRoaster` -- reserts roaster
+
+### Match
+- `!play` — to play the match against the players or bots
 
 ## Notes
 
