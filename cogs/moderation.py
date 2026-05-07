@@ -6,21 +6,83 @@ def setup(bot, db):
     #Command Help
     @bot.command()
     async def helpme(ctx):
-        embed = discord.Embed(title="Command Help", description="List of available commands:", color=0x060f12)
-        embed.add_field(name="!helpme", value="Shows the list of commands.", inline=False)
-        embed.add_field(name="!profile", value="Displays your profile and stats.", inline=False)
+        embed = discord.Embed(
+            title="Command Help",
+            description="List of available commands:",
+            color=0x060f12
+        )
 
-        embed.add_field(name="!joke", value="Fetches a random dark joke.", inline=False)
-        embed.add_field(name="!sound", value="Plays a sound in your current voice channel.", inline=False)
+        # General
+        embed.add_field(
+            name="📌 General",
+            value=(
+                "`!helpme` — Shows the list of commands\n"
+                "`!profile` — Displays your profile and stats"
+            ),
+            inline=False
+        )
 
-        embed.add_field(name="!balance", value="Shows your current balance.", inline=False)
-        embed.add_field(name="!daily", value="Claim your daily reward.", inline=False)
+        # Entertainment
+        embed.add_field(
+            name="🎮 Entertainment",
+            value=(
+                "`!joke` — Sends a random joke (can be inappropriate)\n"
+                "`!sound` — Plays a secret sound in your current voice channel"
+            ),
+            inline=False
+        )
 
-        embed.add_field(name="!inv", value="Displays your card inventory.", inline=False)
-        embed.add_field(name="!sell <number>", value="Sells a card by its number.", inline=False)
-        embed.add_field(name="!sell all", value="Sells all cards except legendary ones.", inline=False)
+        # Economy
+        embed.add_field(
+            name="💰 Economy",
+            value=(
+                "`!balance` — Shows your current balance\n"
+                "`!daily` — Claim your daily reward"
+            ),
+            inline=False
+        )
 
-        embed.add_field(name="!clear <amount>", value="Clears a specified number of messages (max 500). Requires Manage Messages permission.", inline=False)
+        # Cards
+        embed.add_field(
+            name="🃏 Cards",
+            value=(
+                "`!open` — Opens a card pack\n"
+                "`!inv` — Shows your card inventory\n"
+                "`!sell <number>` — Sells a card by its number\n"
+                "`!sell all` — Sells all cards except legendary ones"
+            ),
+            inline=False
+        )
+
+        # Team
+        embed.add_field(
+            name="👥 Team",
+            value=(
+                "`!team` — Shows your current roster\n"
+                "`!setName <name>` — Sets team name (max 10 chars)\n"
+                "`!setCoach <id>` — Sets coach for the team\n"
+                "`!setIGL <id>` — Sets IGL for the team\n"
+                "`!setAWP <id>` — Sets AWPer for the team\n"
+                "`!setRifler <id>` — Sets rifler for the team\n"
+                "`!clearRoaster` — Resets roster"
+            ),
+            inline=False
+        )
+
+        # Match
+        embed.add_field(
+            name="⚔️ Match",
+            value="`!play` — Play a match against players or bots",
+            inline=False
+        )
+
+        # Moderation
+        embed.add_field(
+            name="🛠️ Moderation",
+            value="`!clear <amount>` — Deletes messages (up to 500)",
+            inline=False
+        )
+
         await ctx.send(embed=embed)
         
     #clearing messages command, only for users with manage_messages permission
