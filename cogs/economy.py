@@ -26,12 +26,17 @@ def setup(bot, db):
         user_id = str(ctx.author.id)
         today = datetime.now(UTC).date()
 
+        # Set your desired reward range here
+        min_reward = 550
+        max_reward = 1000
+
+
         if data[user_id].get("DailyClaim") == str(today):
             embed = discord.Embed(title="Daily Reward Already Claimed", description="You have already claimed your daily reward today. Come back tomorrow!", color=0xF50000)
             await ctx.send(embed=embed)
             return
 
-        reward = random.randint(650, 1150)
+        reward = random.randint(min_reward, max_reward)
         db.add_money(ctx.author.id, reward)
         data = db.load_data()
         data[user_id]["DailyClaim"] = str(today)
